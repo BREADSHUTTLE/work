@@ -19,6 +19,13 @@ class AworkCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+private:
+
+	bool charging;
+	float clickTime;
+	bool split;
+	bool reflection;
+
 protected:
 
 	virtual void BeginPlay() override;	// 스타트
@@ -36,8 +43,18 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
 
+	void ClickTimeCheck();
+
+	void Shoot();
+
+	void ShootSplit();
+
+	void ShootReflection();
+
 	// 기본
 	void BaseProjectile();
+
+	//void ChargingProjectile();
 
 public:
 	AworkCharacter();
@@ -51,4 +68,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class AAC_Projectile> projectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class AAC_ProjectileCharging> projectileChargingClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class AAC_ProjectileSplit> projectileSplitClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class AAC_ProjectileReflection> projectileReflectionClass;
 };

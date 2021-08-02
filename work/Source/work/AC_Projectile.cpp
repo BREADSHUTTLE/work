@@ -19,6 +19,7 @@ AAC_Projectile::AAC_Projectile()
 	init = false;
 	moveDirection = 0;
 	destroyTime = 0;
+	createSplit = false;
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +35,11 @@ void AAC_Projectile::Tick(float DeltaTime)
 
 	if (init) 
 	{
-		SetActorLocation(GetActorLocation() + FVector(moveDirection * moveSpeed * DeltaTime, 0, 0));
+		FVector Location = GetActorLocation();
+		Location += GetActorForwardVector() * moveSpeed * DeltaTime;
+		SetActorLocation(Location);
+		// 각도별 속도 조절때문에..
+		//SetActorLocation(GetActorLocation() + FVector(moveDirection * moveSpeed * DeltaTime * 3, 0, 0));
 
 		destroyTime += DeltaTime;
 		if (destroyTime >= 3.0f)
@@ -44,9 +49,10 @@ void AAC_Projectile::Tick(float DeltaTime)
 	}
 }
 
-void AAC_Projectile::Init(float direction, FRotator rotator)
+void AAC_Projectile::Init(float direction, FRotator rotator, bool split)
 {
 	moveDirection = direction;
+	createSplit = split;
 	init = true;
 }
 

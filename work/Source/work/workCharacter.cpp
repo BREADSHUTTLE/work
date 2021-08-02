@@ -7,6 +7,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include <work/AC_Projectile.h>
+#include <work/AC_ProjectileCharging.h>
+#include <work/AC_ProjectileSplit.h>
+#include <work/AC_ProjectileReflection.h>
 
 AworkCharacter::AworkCharacter()
 {
@@ -44,6 +47,10 @@ AworkCharacter::AworkCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	split = false;
+	charging = false;
+	clickTime = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -59,6 +66,12 @@ void AworkCharacter::BeginPlay()
 void AworkCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (charging)
+	{
+		clickTime += DeltaTime;
+
+	}
 }
 
 void AworkCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -71,31 +84,112 @@ void AworkCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &AworkCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &AworkCharacter::TouchStopped);
 
-	PlayerInputComponent->BindAction("Projectile", IE_Pressed, this, &AworkCharacter::BaseProjectile);
+	PlayerInputComponent->BindAction("Projectile", IE_Pressed, this, &AworkCharacter::ClickTimeCheck);
+	PlayerInputComponent->BindAction("Projectile", IE_Released, this, &AworkCharacter::Shoot);
+
+	PlayerInputComponent->BindAction("Projectile_w", IE_Pressed, this, &AworkCharacter::ShootSplit);
+	PlayerInputComponent->BindAction("Projectile_w", IE_Released, this, &AworkCharacter::ShootReflection);
+}
+
+void AworkCharacter::ClickTimeCheck()
+{
+	clickTime = 0;
+	charging = true;
+	split = false;
+	reflection = false;
+}
+
+void AworkCharacter::Shoot()
+{
+	charging = false;
+
+	if (split == false)
+	{
+		//if (GEngine)
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("shoot"));
+
+		BaseProjectile();
+	}
+}
+
+void AworkCharacter::ShootSplit()
+{
+	if (clickTime <= 1.0f)
+	{
+		//if (GEngine)
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("split"));
+
+		split = true;
+
+		if (charging) 
+		{
+			BaseProjectile();
+		}
+	}
+}
+
+void AworkCharacter::ShootReflection()
+{
+	split = false;
+	reflection = true;
+	if (charging == false) 
+	{
+		BaseProjectile();
+	}
 }
 
 void AworkCharacter::BaseProjectile()
-{	
+{
 	float direction = GetActorForwardVector().X;
 	if (direction >= 1.0f || direction <= -0.9f)
 	{
-		if (projectileClass)
+		float vectorX = direction >= 1.0f ? 20.0f : -20.0f;
+		FVector vector = GetActorLocation() + FVector(vectorX, 0, 50.0f);
+		FRotator rotation = GetActorRotation();
+
+		UWorld* world = GetWorld();
+		if (world)
 		{
-			FVector vector = GetActorLocation() + FVector(20.0f, 0, 50.0f);
-			FRotator rotation = GetActorRotation();
-
-			UWorld* world = GetWorld();
-			if (world)
+			FActorSpawnParameters spawnParams;
+			spawnParams.Owner = this;
+			
+			if (split) 
 			{
-				FActorSpawnParameters spawnParams;
-				spawnParams.Owner = this;
-
-				// 블루프린트로 스테틱 메쉬 해둔거 스폰
-				AAC_Projectile* projectile = world->SpawnActor<AAC_Projectile>(projectileClass, vector, rotation);
-
-				projectile->Init(direction, rotation);
+				if (projectileSplitClass)
+				{
+					AAC_ProjectileSplit* projectileSplit = world->SpawnActor<AAC_ProjectileSplit>(projectileSplitClass, vector, rotation);
+					projectileSplit->Init(direction, rotation);
+				}
+			}
+			else if (reflection)
+			{
+				if (projectileReflectionClass)
+				{
+					AAC_ProjectileReflection* projectileReflection = world->SpawnActor<AAC_ProjectileReflection>(projectileReflectionClass, vector, rotation);
+					projectileReflection->Init(direction, rotation);
+				}
+			}
+			else
+			{
+				if (clickTime >= 3.0f)
+				{
+					if (projectileChargingClass)
+					{
+						AAC_ProjectileCharging* projectileCharging = world->SpawnActor<AAC_ProjectileCharging>(projectileChargingClass, vector, rotation);
+						projectileCharging->Init(direction, rotation);
+					}
+				}
+				else
+				{
+					if (projectileClass)
+					{
+						AAC_Projectile* projectile = world->SpawnActor<AAC_Projectile>(projectileClass, vector, rotation);
+						projectile->Init(direction, rotation, false);
+					}
+				}
 			}
 		}
+
 	}
 }
 

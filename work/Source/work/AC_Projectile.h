@@ -23,6 +23,7 @@ private:
 	bool init;
 	float moveDirection;
 	float destroyTime;
+	bool createSplit;
 
 public:	
 	// Sets default values for this actor's properties
@@ -44,7 +45,7 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 		USphereComponent* collisionComponent;
 
-	void Init(float direction, FRotator rotator);
+	void Init(float direction, FRotator rotator, bool split);
 
 	UPROPERTY(VisibleAnywhere, Category = Move)
 		UProjectileMovementComponent* movementComponent;
