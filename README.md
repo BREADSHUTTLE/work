@@ -1,11 +1,11 @@
 # 메모장
 
-c++ 버전관리 제외
-Saved : 자동저장, 로그, 스크린샷 등등..
-Intermediate : 임시 파일 저장
-Build : 패키징 하면 생기는거
-.vs : vs 관련..
-.sln : 협업할 때 없어도 될 것
+*c++ 버전관리 제외
+- Saved : 자동저장, 로그, 스크린샷 등등..
+- Intermediate : 임시 파일 저장
+- Build : 패키징 하면 생기는거
+- .vs : vs 관련..
+- .sln : 협업할 때 없어도 될 것
 
 ----
 
@@ -19,7 +19,7 @@ Build : 패키징 하면 생기는거
 ----
 
 * FVector : 벡터
-* FRotator : 회전
+* FRotator : 회전 (pitch : y / yam : z / roll : x)
 
 ----
 
