@@ -22,6 +22,7 @@ class AworkCharacter : public ACharacter
 private:
 
 	bool charging;
+	float maxCharging;
 	float clickTime;
 	bool split;
 	bool reflection;
@@ -56,6 +57,8 @@ protected:
 
 	//void ChargingProjectile();
 
+	void GameWidget();
+
 public:
 	AworkCharacter();
 
@@ -77,4 +80,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class AAC_ProjectileReflection> projectileReflectionClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widget", Meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UW_UserWidget> widgetMainClass;
+
+	class UW_UserWidget* widgetMain;
+
 };

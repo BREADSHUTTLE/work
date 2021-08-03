@@ -10,6 +10,7 @@
 #include <work/AC_ProjectileCharging.h>
 #include <work/AC_ProjectileSplit.h>
 #include <work/AC_ProjectileReflection.h>
+#include <work/W_UserWidget.h>
 
 AworkCharacter::AworkCharacter()
 {
@@ -50,6 +51,7 @@ AworkCharacter::AworkCharacter()
 
 	split = false;
 	charging = false;
+	maxCharging = 3.0f;
 	clickTime = 0;
 }
 
@@ -61,16 +63,35 @@ AworkCharacter::AworkCharacter()
 void AworkCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GameWidget();
+}
+
+void AworkCharacter::GameWidget()
+{
+	if (widgetMainClass != nullptr)
+	{
+		UWorld* world = GetWorld();
+		widgetMain = CreateWidget<UW_UserWidget>(world, widgetMainClass);
+
+		if (widgetMain != nullptr)
+		{
+			widgetMain->AddToViewport();
+			widgetMain->HideBar();
+			widgetMain->SetProjectileCount(UW_UserWidget::ProjectileType::None);
+		}
+	}
 }
 
 void AworkCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (charging)
+	if (charging && split == false)
 	{
 		clickTime += DeltaTime;
-
+		widgetMain->SetChargeTime(clickTime, maxCharging);
+		widgetMain->ShowBar();
 	}
 }
 
@@ -114,6 +135,7 @@ void AworkCharacter::Shoot()
 
 void AworkCharacter::ShootSplit()
 {
+	
 	if (clickTime <= 1.0f)
 	{
 		//if (GEngine)
@@ -159,6 +181,8 @@ void AworkCharacter::BaseProjectile()
 				{
 					AAC_ProjectileSplit* projectileSplit = world->SpawnActor<AAC_ProjectileSplit>(projectileSplitClass, vector, rotation);
 					projectileSplit->Init(direction, rotation);
+
+					widgetMain->SetProjectileCount(UW_UserWidget::ProjectileType::Split);
 				}
 			}
 			else if (reflection)
@@ -167,16 +191,20 @@ void AworkCharacter::BaseProjectile()
 				{
 					AAC_ProjectileReflection* projectileReflection = world->SpawnActor<AAC_ProjectileReflection>(projectileReflectionClass, vector, rotation);
 					projectileReflection->Init(direction, rotation);
+
+					widgetMain->SetProjectileCount(UW_UserWidget::ProjectileType::Reflection);
 				}
 			}
 			else
 			{
-				if (clickTime >= 3.0f)
+				if (clickTime >= maxCharging)
 				{
 					if (projectileChargingClass)
 					{
 						AAC_ProjectileCharging* projectileCharging = world->SpawnActor<AAC_ProjectileCharging>(projectileChargingClass, vector, rotation);
 						projectileCharging->Init(direction, rotation);
+
+						widgetMain->SetProjectileCount(UW_UserWidget::ProjectileType::Charging);
 					}
 				}
 				else
@@ -185,9 +213,13 @@ void AworkCharacter::BaseProjectile()
 					{
 						AAC_Projectile* projectile = world->SpawnActor<AAC_Projectile>(projectileClass, vector, rotation);
 						projectile->Init(direction, rotation, false);
+
+						widgetMain->SetProjectileCount(UW_UserWidget::ProjectileType::Basic);
 					}
 				}
 			}
+
+			widgetMain->HideBar();
 		}
 
 	}
