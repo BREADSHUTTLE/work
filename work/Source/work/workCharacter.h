@@ -20,6 +20,16 @@ class AworkCharacter : public ACharacter
 	class USpringArmComponent* CameraBoom;
 
 private:
+	enum State
+	{
+		Ready,
+		Basic,
+		Charging,
+		Split,
+		Reflection,
+	};
+
+	State curState;
 
 	bool charging;
 	float maxCharging;
@@ -60,6 +70,7 @@ protected:
 	void GameWidget();
 
 public:
+
 	AworkCharacter();
 
 	virtual void Tick(float DeltaTime) override;	// 업데이트
@@ -85,5 +96,4 @@ public:
 	TSubclassOf<class UW_UserWidget> widgetMainClass;
 
 	class UW_UserWidget* widgetMain;
-
 };

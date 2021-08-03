@@ -53,6 +53,8 @@ AworkCharacter::AworkCharacter()
 	charging = false;
 	maxCharging = 3.0f;
 	clickTime = 0;
+
+	curState = State::Ready;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,11 +89,15 @@ void AworkCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (charging && split == false)
+	if (charging)
+	//if (charging && split == false)
 	{
 		clickTime += DeltaTime;
-		widgetMain->SetChargeTime(clickTime, maxCharging);
-		widgetMain->ShowBar();
+		if (clickTime > 0.5f) 
+		{
+			widgetMain->SetChargeTime(clickTime, maxCharging);
+			widgetMain->ShowBar();
+		}
 	}
 }
 
@@ -117,12 +123,20 @@ void AworkCharacter::ClickTimeCheck()
 	clickTime = 0;
 	charging = true;
 	split = false;
-	reflection = false;
+
+	//reflection = false;
+
+	curState = State::Ready;
 }
 
 void AworkCharacter::Shoot()
 {
 	charging = false;
+
+	if (clickTime >= maxCharging)
+		curState = State::Charging;
+	else 
+		curState = State::Basic;
 
 	if (split == false)
 	{
@@ -132,15 +146,15 @@ void AworkCharacter::Shoot()
 
 void AworkCharacter::ShootSplit()
 {
-	
 	if (clickTime <= 1.0f)
 	{
-		//if (GEngine)
-		//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("split"));
-
+		clickTime = 0;
+		charging = false;
 		split = true;
 
-		if (charging) 
+		curState = State::Split;
+
+		//if (charging) 
 		{
 			BaseProjectile();
 		}
@@ -149,10 +163,12 @@ void AworkCharacter::ShootSplit()
 
 void AworkCharacter::ShootReflection()
 {
-	split = false;
-	reflection = true;
-	if (charging == false) 
+	//split = false;
+	//reflection = true;
+	if (curState != State::Split)
+	//if (charging == false) 
 	{
+		curState = State::Reflection;
 		BaseProjectile();
 	}
 }
@@ -172,7 +188,8 @@ void AworkCharacter::BaseProjectile()
 			FActorSpawnParameters spawnParams;
 			spawnParams.Owner = this;
 			
-			if (split) 
+			if (curState == State::Split)
+			//if (split) 
 			{
 				if (projectileSplitClass)
 				{
@@ -182,7 +199,8 @@ void AworkCharacter::BaseProjectile()
 					widgetMain->SetProjectileCount(UW_UserWidget::ProjectileType::Split);
 				}
 			}
-			else if (reflection)
+			else if (curState == State::Reflection)
+			//else if (reflection)
 			{
 				if (projectileReflectionClass)
 				{
@@ -194,7 +212,8 @@ void AworkCharacter::BaseProjectile()
 			}
 			else
 			{
-				if (clickTime >= maxCharging)
+				if (curState == State::Charging)
+				//if (clickTime >= maxCharging)
 				{
 					if (projectileChargingClass)
 					{
@@ -204,7 +223,8 @@ void AworkCharacter::BaseProjectile()
 						widgetMain->SetProjectileCount(UW_UserWidget::ProjectileType::Charging);
 					}
 				}
-				else
+				else if (curState == State::Basic)
+				//else
 				{
 					if (projectileClass)
 					{
@@ -217,6 +237,7 @@ void AworkCharacter::BaseProjectile()
 			}
 
 			widgetMain->HideBar();
+			//curState = State::Ready;
 		}
 
 	}
