@@ -27,3 +27,15 @@
 FString::SanitizeFloat(float변수);
 
 ----
+
+* 위젯 생성자
+- NativeOnInitialized() : 생성자 함수
+- 버튼 델리게이트 : OnClicked.AddDynamic(onwer, callback)
+
+----
+
+* 위젯에서 계층구조를 쌓을 때, 유의사항.
+- 계층 구조를 쌓는 것은 유니티와 비슷하지만, 자식을 가지는 갯수가 위젯마다 다르다. (이것 때문에 계층구조가 안만들어지는 불상사를 줄여보자.)
+![image](https://user-images.githubusercontent.com/25288572/128043945-e00f7702-ba00-40a7-b410-4960e2aa8d0e.png)
+
+----
