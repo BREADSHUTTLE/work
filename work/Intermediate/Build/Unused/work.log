@@ -1,0 +1,18 @@
+﻿  Using 'git status' to determine working set for adaptive non-unity build (D:\work).
+  Parsing headers for workEditor
+    Running UnrealHeaderTool "D:\work\work\work.uproject" "D:\work\work\Intermediate\Build\Win64\workEditor\Development\workEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\uhrai\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+  Reflection code generated for workEditor in 3.1691903 seconds
+  Building workEditor...
+  Using Visual Studio 2019 14.29.30040 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037) and Windows 10.0.17763.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+  Building 7 actions with 12 processes...
+    [1/7] work.init.gen.cpp
+    [2/7] workCharacter.cpp
+    [3/7] W_UserWidget.cpp
+    [4/7] W_UserWidget.gen.cpp
+    [5/7] UE4Editor-work-0197.lib
+       D:\work\work\Intermediate\Build\Win64\UE4Editor\Development\work\UE4Editor-work-0197.lib 라이브러리 및 D:\work\work\Intermediate\Build\Win64\UE4Editor\Development\work\UE4Editor-work-0197.exp 개체를 생성하고 있습니다.
+    [6/7] UE4Editor-work-0197.dll
+       D:\work\work\Intermediate\Build\Win64\UE4Editor\Development\work\UE4Editor-work-0197.suppressed.lib 라이브러리 및 D:\work\work\Intermediate\Build\Win64\UE4Editor\Development\work\UE4Editor-work-0197.suppressed.exp 개체를 생성하고 있습니다.
+    [7/7] workEditor.target
+  Total time in Parallel executor: 3.78 seconds
+  Total execution time: 7.44 seconds
