@@ -34,7 +34,7 @@ void AAC_ProjectileCharging::Tick(float DeltaTime)
 	if (init)
 	{
 		FVector Location = GetActorLocation();
-		Location += GetActorForwardVector() * moveSpeed * DeltaTime;
+		Location += GetActorForwardVector() * moveSpeed * DeltaTime * 5.0f;
 		SetActorLocation(Location);
 
 		destroyTime += DeltaTime;

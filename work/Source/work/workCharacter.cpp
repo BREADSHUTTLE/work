@@ -126,9 +126,6 @@ void AworkCharacter::Shoot()
 
 	if (split == false)
 	{
-		//if (GEngine)
-		//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("shoot"));
-
 		BaseProjectile();
 	}
 }

@@ -36,7 +36,7 @@ void AAC_Projectile::Tick(float DeltaTime)
 	if (init) 
 	{
 		FVector Location = GetActorLocation();
-		Location += GetActorForwardVector() * moveSpeed * DeltaTime;
+		Location += GetActorForwardVector() * moveSpeed * DeltaTime * 5.0f;
 		SetActorLocation(Location);
 		// 각도별 속도 조절때문에..
 		//SetActorLocation(GetActorLocation() + FVector(moveDirection * moveSpeed * DeltaTime * 3, 0, 0));

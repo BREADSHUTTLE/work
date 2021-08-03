@@ -35,7 +35,7 @@ void AAC_ProjectileSplit::Tick(float DeltaTime)
 	if (init)
 	{
 		FVector Location = GetActorLocation();
-		Location += GetActorForwardVector() * moveSpeed * DeltaTime;
+		Location += GetActorForwardVector() * moveSpeed * DeltaTime * 3.0f;
 		SetActorLocation(Location);
 
 		destroyTime += DeltaTime;
@@ -54,7 +54,7 @@ void AAC_ProjectileSplit::Init(float direction, FRotator rotator)
 
 void AAC_ProjectileSplit::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	ProjectileDestroy();
+	Destroy();
 }
 
 void AAC_ProjectileSplit::NotifyActorEndOverlap(AActor* OtherActor)
